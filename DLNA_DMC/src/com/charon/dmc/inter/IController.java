@@ -6,6 +6,9 @@ public interface IController {
 
 	boolean play(Device device, String path);
 
+	/**
+	 * @param pausePosition The format must be 00:00:00.
+	 */
 	boolean goon(Device device, String pausePosition);
 
 	/**
@@ -15,16 +18,15 @@ public interface IController {
 	 */
 	String getTransportState(Device device);
 
-	/**
-	 * @return The format is min:max
-	 */
-	String getVolumeDbRange(Device device);
-
+	int getMinVolumeValue(Device device);
+	
+	int getMaxVolumeValue(Device device);
+	
 	boolean seek(Device device, String targetPosition);
 
-	String getPositionInfo(Device device);
+	int getPositionInfo(Device device);
 
-	String getMediaDuration(Device device);
+	int getMediaDuration(Device device);
 
 	/**
 	 * @param targetValue
@@ -36,7 +38,7 @@ public interface IController {
 
 	boolean setVoice(Device device, int value);
 
-	String getVoice(Device device);
+	int getVoice(Device device);
 
 	boolean stop(Device mediaRenderDevice);
 

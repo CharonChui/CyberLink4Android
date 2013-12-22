@@ -75,6 +75,14 @@ public class DLNAContainer {
 		}
 	}
 
+	public Device getSelectedDevice() {
+		return mSelectedDevice;
+	}
+
+	public void setSelectedDevice(Device mSelectedDevice) {
+		this.mSelectedDevice = mSelectedDevice;
+	}
+
 	public void setDeviceChangeListener(
 			DeviceChangeListener deviceChangeListener) {
 		mDeviceChangeListener = deviceChangeListener;

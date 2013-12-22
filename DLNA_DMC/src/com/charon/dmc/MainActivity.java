@@ -81,6 +81,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				DLNAContainer.getInstance().setSelectedDevice(mDevices.get(position));
 				goControlActivity();
 			}
 		});
