@@ -7,12 +7,14 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="19" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
+        android:name="DMCApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        android:theme="@android:style/Theme.NoTitleBar" >
         <activity
             android:name="com.charon.dmc.SplashActivity"
             android:label="@string/app_name" >
@@ -23,9 +25,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.charon.dmc.MainActivity"
+            android:name="com.charon.dmc.ControlActivity"
             android:screenOrientation="landscape" >
         </activity>
+        <activity android:name="com.charon.dmc.MainActivity" >
+        </activity>
+
+        <service android:name="com.charon.dmc.service.DLNAService" >
+        </service>
     </application>
 
 </manifest>

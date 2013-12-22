@@ -1,5 +1,8 @@
 package com.charon.dmc;
 
+import com.charon.dmc.engine.DLNAContainer;
+import com.charon.dmc.service.DLNAService;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.AlphaAnimation;
@@ -18,11 +21,11 @@ public class SplashActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
-
+		startDLNAService();
 		findView();
 		setUp();
 	}
-
+	
 	private void findView() {
 		iv_splash = (ImageView) findViewById(R.id.iv_splash);
 	}
@@ -48,9 +51,15 @@ public class SplashActivity extends Activity {
 	}
 
 	private void goMainActivity() {
-		Intent intent = new Intent(this, MainActivity.class);
+		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 		startActivity(intent);
 		finish();
+	}
+
+	private void startDLNAService() {
+		DLNAContainer.getInstance().clear();
+		Intent intent = new Intent(getApplicationContext(), DLNAService.class);
+		startService(intent);
 	}
 
 }

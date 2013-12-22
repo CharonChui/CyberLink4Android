@@ -1,183 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent" >
+    android:background="@drawable/home_background"
+    android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/tv_title"
+    <Button
+        android:id="@+id/btn_main"
         android:layout_width="match_parent"
         android:layout_height="40dip"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:background="@android:color/black"
-        android:gravity="center"
-        android:singleLine="true"
-        android:text="title" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dip"
+        android:background="@drawable/dlna_search_selector"
+        android:text="Search"
+        android:textColor="@android:color/white"
+        android:textSize="30dip" />
 
-    <RelativeLayout
-        android:id="@+id/rl_boot"
+    <ListView
+        android:id="@+id/lv_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/black" >
+        android:layout_height="wrap_content" >
+    </ListView>
 
-        <SeekBar
-            android:id="@+id/sb_progress"
-            style="@style/MediaController_SeekBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="true" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/sb_progress"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:baselineAligned="false" >
-
-            <LinearLayout
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="10dp" >
-
-                <TextView
-                    android:id="@+id/tv_current"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dip"
-                    android:text="00:00" />
-
-                <TextView
-                    android:id="@+id/tv_separate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="/" />
-
-                <TextView
-                    android:id="@+id/tv_total"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="00:00" />
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1000" >
-
-                <FrameLayout
-                    android:id="@+id/fl_play_switch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" >
-
-                    <ImageView
-                        android:id="@+id/iv_play"
-                        android:layout_width="40dp"
-                        android:layout_height="42dp"
-                        android:src="@drawable/play_button" />
-
-                    <ImageView
-                        android:id="@+id/iv_pause"
-                        android:layout_width="40dp"
-                        android:layout_height="42dp"
-                        android:src="@drawable/pause_button"
-                        android:visibility="gone" />
-                </FrameLayout>
-
-                <ImageView
-                    android:id="@+id/iv_back_fast"
-                    android:layout_width="48dp"
-                    android:layout_height="42dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="7.3dp"
-                    android:layout_toLeftOf="@id/fl_play_switch"
-                    android:paddingRight="10dp"
-                    android:src="@drawable/back_fast_selector" />
-
-                <ImageView
-                    android:id="@+id/iv_go_fast"
-                    android:layout_width="48dp"
-                    android:layout_height="42dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="7.3dp"
-                    android:layout_toRightOf="@id/fl_play_switch"
-                    android:paddingLeft="10dp"
-                    android:src="@drawable/go_fast_selector" />
-
-                <ImageView
-                    android:id="@+id/iv_pre"
-                    android:layout_width="33.3dp"
-                    android:layout_height="42dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="7.3dp"
-                    android:layout_toLeftOf="@id/iv_back_fast"
-                    android:paddingRight="10dp"
-                    android:src="@drawable/pre_video_selector" />
-
-                <ImageView
-                    android:id="@+id/iv_next"
-                    android:layout_width="33.3dp"
-                    android:layout_height="42dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="7.3dp"
-                    android:layout_toRightOf="@id/iv_go_fast"
-                    android:paddingLeft="10dp"
-                    android:src="@drawable/next_video_selector" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical" >
-
-                <SeekBar
-                    android:id="@+id/sb_voice"
-                    style="@style/MediaController_SeekBar"
-                    android:layout_width="98dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:focusable="true"
-                    android:maxHeight="7.0dip"
-                    android:minHeight="7.0dip" />
-
-                <FrameLayout
-                    android:id="@+id/fl_volume"
-                    android:layout_width="31dp"
-                    android:layout_height="20.77dp"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/sb_voice" >
-
-                    <ImageView
-                        android:id="@+id/iv_volume"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:paddingLeft="10dip"
-                        android:src="@drawable/volume_must" />
-
-                    <ImageView
-                        android:id="@+id/iv_mute"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:paddingLeft="10dip"
-                        android:src="@drawable/volume_no_selected"
-                        android:visibility="gone" />
-                </FrameLayout>
-            </RelativeLayout>
-        </LinearLayout>
-    </RelativeLayout>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/rl_boot"
-        android:layout_below="@id/tv_title"
-        android:src="@drawable/splash" />
-
-</RelativeLayout>
+</LinearLayout>
