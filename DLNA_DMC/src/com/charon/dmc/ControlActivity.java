@@ -1,6 +1,7 @@
 package com.charon.dmc;
 
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 
 import org.cybergarage.upnp.Device;
@@ -8,16 +9,20 @@ import org.cybergarage.upnp.Device;
 import com.charon.dmc.engine.DLNAContainer;
 import com.charon.dmc.engine.MultiPointController;
 import com.charon.dmc.inter.IController;
+import com.charon.dmc.util.LogUtil;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-public class ControlActivity extends Activity {
+public class ControlActivity extends Activity implements OnClickListener {
 	private IController mController;
 	private TextView tv_title;
 	private SeekBar sb_progress;
@@ -37,6 +42,10 @@ public class ControlActivity extends Activity {
 
 	private List<String> urls = new ArrayList<String>();
 	private int index;
+	private Handler handler = new Handler();
+	private static final String zeroTime = "00:00:00";
+
+	private static final String TAG = "ControlActivity";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +54,71 @@ public class ControlActivity extends Activity {
 		setController(new MultiPointController());
 		findView();
 		initView();
+		if (mController == null || mDevice == null) {
+			Toast.makeText(getApplicationContext(), "Invalidate operation",
+					Toast.LENGTH_SHORT).show();
+			finish();
+		}
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		updateVoice();
+		updateMute();
 	}
 
 	private void setController(IController controller) {
 		this.mController = controller;
+	}
+
+	private void updateMaxVolumn() {
+		new Thread() {
+			public void run() {
+				final int maxVolumnValue = mController
+						.getMaxVolumeValue(mDevice);
+
+				if (maxVolumnValue == -1) {
+					LogUtil.d(TAG, "get max volumn value failed..");
+				} else {
+					LogUtil.d(TAG,
+							"get max volumn value success, the value is "
+									+ maxVolumnValue);
+					sb_voice.setMax(maxVolumnValue);
+				}
+			};
+		}.start();
+	}
+
+	private void updateVoice() {
+		new Thread() {
+			@Override
+			public void run() {
+				int currentVoice = mController.getVoice(mDevice);
+				if (currentVoice == -1) {
+					currentVoice = 0;
+					LogUtil.d(TAG, "get current voice failed");
+				} else {
+					LogUtil.d(TAG, "get current voice success");
+					sb_voice.setProgress(currentVoice);
+				}
+			}
+		}.start();
+	}
+
+	private void updateMute() {
+		new Thread() {
+			@Override
+			public void run() {
+				String mute = mController.getMute(mDevice);
+				if (mute == null) {
+					LogUtil.d(TAG, "get mute failed...");
+				} else {
+					LogUtil.d(TAG, "get mute success");
+					initMuteImg(mute);
+				}
+			}
+		}.start();
 	}
 
 	private void findView() {
@@ -73,100 +143,173 @@ public class ControlActivity extends Activity {
 		urls.add("");
 		mDevice = DLNAContainer.getInstance().getSelectedDevice();
 		// init the state
-		int maxVolumnValue = mController.getMaxVolumeValue(mDevice);
-		if (maxVolumnValue == -1) {
-			maxVolumnValue = 0;
-		}
-		sb_voice.setMax(maxVolumnValue);
+		updateMaxVolumn();
 
-		int currentVoice = mController.getVoice(mDevice);
-		if (currentVoice == -1) {
-			currentVoice = 0;
-		}
-		sb_voice.setProgress(currentVoice);
+		// sb_progress.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+		// {
+		// @Override
+		// public void onStopTrackingTouch(SeekBar seekBar) {
+		// isAutoPlay = false;
+		// int progress = seekBar.getProgress();
+		// seek(mediaRenderDevice, secToTime(progress));
+		// }
+		//
+		// @Override
+		// public void onStartTrackingTouch(SeekBar seekBar) {
+		// removeChangeMessage();
+		// }
+		//
+		// @Override
+		// public void onProgressChanged(SeekBar seekBar, int progress,
+		// boolean fromUser) {
+		// tv_current.setText(secToTime(progress));
+		// if (fromUser) {
+		// removeChangeMessage();
+		// if (System.currentTimeMillis() - preSeekTime < 1000) {
+		// return;
+		// } else {
+		// preSeekTime = System.currentTimeMillis();
+		// }
+		// // seek(mediaRenderDevice, secToTime(progress));
+		// }
+		// }
+		// });
+		//
+		// sb_voice.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+		//
+		// @Override
+		// public void onStopTrackingTouch(SeekBar seekBar) {
+		// setVoice(mediaRenderDevice, seekBar.getProgress());
+		// if (iv_mute.getVisibility() == View.VISIBLE) {
+		// setMute(mediaRenderDevice, "0");
+		// }
+		//
+		// if (seekBar.getProgress() <= 1) {
+		// setMute(mediaRenderDevice, "1");
+		// }
+		// }
+		//
+		// @Override
+		// public void onStartTrackingTouch(SeekBar seekBar) {
+		// }
+		//
+		// @Override
+		// public void onProgressChanged(SeekBar seekBar, int progress,
+		// boolean fromUser) {
+		// // 声音为0的时候让其静音
+		// if (seekBar.getProgress() <= 1) {
+		// iv_mute.setVisibility(View.VISIBLE);
+		// iv_volume.setVisibility(View.GONE);
+		// setMute(mediaRenderDevice, "1");
+		// }
+		// if (seekBar.getProgress() >= 2) {
+		// iv_mute.setVisibility(View.GONE);
+		// iv_volume.setVisibility(View.VISIBLE);
+		// }
+		// }
+		// });
 
-		String mute = mController.getMute(mDevice);
-		if (mute != null) {
-			initMuteImg(mute);
-		}
-		
-		sb_progress.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				isAutoPlay = false;
-				int progress = seekBar.getProgress();
-				seek(mediaRenderDevice, secToTime(progress));
-			}
-
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				removeChangeMessage();
-			}
-
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress,
-					boolean fromUser) {
-				tv_current.setText(secToTime(progress));
-				if (fromUser) {
-					removeChangeMessage();
-					if (System.currentTimeMillis() - preSeekTime < 1000) {
-						return;
-					} else {
-						preSeekTime = System.currentTimeMillis();
-					}
-					// seek(mediaRenderDevice, secToTime(progress));
-				}
-			}
-		});
-
-		getMute();
-
-		sb_voice.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				setVoice(mediaRenderDevice, seekBar.getProgress());
-				if (iv_mute.getVisibility() == View.VISIBLE) {
-					setMute(mediaRenderDevice, "0");
-				}
-
-				if (seekBar.getProgress() <= 1) {
-					setMute(mediaRenderDevice, "1");
-				}
-			}
-
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-			}
-
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress,
-					boolean fromUser) {
-				// 声音为0的时候让其静音
-				if (seekBar.getProgress() <= 1) {
-					iv_mute.setVisibility(View.VISIBLE);
-					iv_volume.setVisibility(View.GONE);
-					setMute(mediaRenderDevice, "1");
-				}
-				if (seekBar.getProgress() >= 2) {
-					iv_mute.setVisibility(View.GONE);
-					iv_volume.setVisibility(View.VISIBLE);
-				}
-			}
-		});
-		initState();
-		fl_play_switch.setOnClickListener(this);
+		iv_play.setOnClickListener(this);
+		iv_pause.setOnClickListener(this);
 		iv_pre.setOnClickListener(this);
 		iv_next.setOnClickListener(this);
-		fl_volume.setOnClickListener(this);
-		iv_back.setOnClickListener(this);
+		iv_mute.setOnClickListener(this);
+		iv_volume.setOnClickListener(this);
 		iv_go_fast.setOnClickListener(this);
 		iv_back_fast.setOnClickListener(this);
 
-		tv_device.setText(operator.getRenderName());
+		play(getCurrentPlayPath());
 
-		mController.play(mDevice, getCurrentPlayPath());
+	}
 
+	private void play(final String path) {
+		// recover to the original state
+		showPlay(true);
+		setCurrentTime(zeroTime);
+		setTotalTime(zeroTime);
+		setTitle(path);
+
+		new Thread() {
+			public void run() {
+				final boolean isSuccess = mController.play(mDevice, path);
+				if (isSuccess) {
+					LogUtil.d(TAG, "play success");
+				} else {
+					LogUtil.d(TAG, "play failed..");
+				}
+
+				runOnUiThread(new Runnable() {
+					public void run() {
+						showPlay(!isSuccess);
+					}
+				});
+			};
+		}.start();
+	}
+
+	private void pause() {
+		// TODO Stop progress auto increasing.
+		showPlay(true);
+		new Thread() {
+			public void run() {
+				final boolean pause = mController.pause(mDevice);
+
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						showPlay(pause);
+						// TODO stop or goon increasing
+					}
+				});
+			};
+		}.start();
+	}
+
+	private void playNext() {
+		index++;
+		if (index > urls.size() - 1) {
+			index = 0;
+		}
+		play(getCurrentPlayPath());
+	}
+
+	private void playPre() {
+		index--;
+		if (index < 0) {
+			index = urls.size() - 1;
+		}
+		play(getCurrentPlayPath());
+	}
+
+	private void goon(final String pausePosition) {
+		new Thread() {
+			@Override
+			public void run() {
+				mController.goon(mDevice, pausePosition);
+			}
+		}.start();
+	}
+
+	private void setCurrentTime(String time) {
+		tv_current.setText(time);
+	}
+
+	private void setTotalTime(String time) {
+		tv_total.setText(time);
+	}
+
+	private void setTitle(String title) {
+		tv_title.setText(title);
+	}
+
+	private void showPlay(boolean showPlay) {
+		if (showPlay) {
+			iv_play.setVisibility(View.VISIBLE);
+			iv_pause.setVisibility(View.GONE);
+		} else {
+			iv_play.setVisibility(View.GONE);
+			iv_pause.setVisibility(View.VISIBLE);
+		}
 	}
 
 	private void initMuteImg(String mute) {
@@ -225,5 +368,11 @@ public class ControlActivity extends Activity {
 			retStr = "00";
 		}
 		return retStr;
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+
 	}
 }
