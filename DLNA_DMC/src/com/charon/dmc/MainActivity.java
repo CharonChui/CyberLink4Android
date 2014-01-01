@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.cybergarage.upnp.Device;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -23,7 +22,7 @@ import com.charon.dmc.engine.DLNAContainer.DeviceChangeListener;
 import com.charon.dmc.service.DLNAService;
 import com.charon.dmc.util.LogUtil;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 	protected static final String TAG = "MainActivity";
 	private Button btn_main;
 	private ListView lv_main;
@@ -43,12 +42,6 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		refresh();
-	}
-
-	@Override
-	protected void onDestroy() {
-		stopDLNAService();
-		super.onDestroy();
 	}
 
 	private void findView() {
@@ -82,7 +75,7 @@ public class MainActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				DLNAContainer.getInstance().setSelectedDevice(mDevices.get(position));
-				goControlActivity();
+				startControlActivity();
 			}
 		});
 
@@ -111,12 +104,7 @@ public class MainActivity extends Activity {
 		startService(intent);
 	}
 
-	private void stopDLNAService() {
-		Intent intent = new Intent(getApplicationContext(), DLNAService.class);
-		stopService(intent);
-	}
-
-	private void goControlActivity() {
+	private void startControlActivity() {
 		Intent intent = new Intent(getApplicationContext(),
 				ControlActivity.class);
 		startActivity(intent);

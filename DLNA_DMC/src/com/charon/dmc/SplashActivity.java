@@ -1,16 +1,21 @@
 package com.charon.dmc;
 
-import com.charon.dmc.engine.DLNAContainer;
-import com.charon.dmc.service.DLNAService;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
-import android.app.Activity;
-import android.content.Intent;
 
-public class SplashActivity extends Activity {
+import com.charon.dmc.engine.DLNAContainer;
+import com.charon.dmc.service.DLNAService;
+
+/**
+ * Splash activity, show the welcome image and start the DLNAService.
+ * 
+ * @author CharonChui
+ * 
+ */
+public class SplashActivity extends BaseActivity {
 	private ImageView iv_splash;
 
 	private Handler handler = new Handler();
@@ -25,7 +30,7 @@ public class SplashActivity extends Activity {
 		findView();
 		setUp();
 	}
-	
+
 	private void findView() {
 		iv_splash = (ImageView) findViewById(R.id.iv_splash);
 	}
@@ -38,7 +43,7 @@ public class SplashActivity extends Activity {
 
 			@Override
 			public void run() {
-				goMainActivity();
+				startMainActivity();
 			}
 		}, sDelayTime);
 	}
@@ -50,13 +55,14 @@ public class SplashActivity extends Activity {
 		iv_splash.startAnimation(alphaAnimation);
 	}
 
-	private void goMainActivity() {
+	private void startMainActivity() {
 		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 		startActivity(intent);
 		finish();
 	}
 
 	private void startDLNAService() {
+		// Clear the device container.
 		DLNAContainer.getInstance().clear();
 		Intent intent = new Intent(getApplicationContext(), DLNAService.class);
 		startService(intent);

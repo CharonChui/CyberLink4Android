@@ -7,7 +7,9 @@ import org.cybergarage.upnp.device.DeviceChangeListener;
 import com.charon.dmc.util.LogUtil;
 
 /**
- * The new thread to search the devices.
+ * A thread to search the devices all the time.
+ * 
+ * @author CharonChui
  */
 public class SearchThread extends Thread {
 	private boolean flag = true;
@@ -34,6 +36,9 @@ public class SearchThread extends Thread {
 		}
 	}
 
+	/**
+	 * Search for the DLNA devices.
+	 */
 	private void searchDevices() {
 		try {
 			if (mStartComplete) {
@@ -50,7 +55,8 @@ public class SearchThread extends Thread {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		// Search the devices five times fast, and after that we can make it
+		// search lowly to save the power.
 		synchronized (this) {
 			try {
 				mSearchTimes++;
@@ -65,16 +71,29 @@ public class SearchThread extends Thread {
 		}
 	}
 
+	/**
+	 * Set the search times, set this to 0 to make it search fast.
+	 * 
+	 * @param searchTimes
+	 *            The times we have searched.
+	 */
 	public synchronized void setSearcTimes(int searchTimes) {
 		this.mSearchTimes = searchTimes;
 	}
 
+	/**
+	 * Notify all the thread.
+	 */
 	public void awake() {
 		synchronized (this) {
 			notifyAll();
 		}
 	}
-	
+
+	/**
+	 * Stop the thread, if quit this application we should use this method to
+	 * stop the thread.
+	 */
 	public void stopThread() {
 		flag = false;
 		awake();

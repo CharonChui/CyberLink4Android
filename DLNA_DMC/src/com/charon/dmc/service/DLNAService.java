@@ -17,9 +17,9 @@ import com.charon.dmc.engine.SearchThread;
 import com.charon.dmc.util.LogUtil;
 
 /**
- * Search the DLNA Device.
+ * The service to search the DLNA Device in background all the time.
  * 
- * @author Charon Chui
+ * @author CharonChui
  * 
  */
 public class DLNAService extends Service {

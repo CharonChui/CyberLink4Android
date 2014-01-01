@@ -156,40 +156,43 @@ public class MultiPointController implements IController {
 	}
 
 	@Override
-	public int getPositionInfo(Device device) {
+	public String getPositionInfo(Device device) {
 		Service localService = device.getService(AVTransport1);
 
 		if (localService == null)
-			return -1;
+			return null;
 
 		final Action localAction = localService.getAction("GetPositionInfo");
 		if (localAction == null) {
-			return -1;
+			return null;
 		}
 
 		localAction.setArgumentValue("InstanceID", "0");
-		localAction.postControlAction();
-		return Integer.parseInt(localAction.getArgumentValue("AbsTime"));
+		boolean isSuccess = localAction.postControlAction();
+		if (isSuccess) {
+			return localAction.getArgumentValue("AbsTime");
+		} else {
+			return null;
+		}
 	}
 
 	@Override
-	public int getMediaDuration(Device device) {
+	public String getMediaDuration(Device device) {
 		Service localService = device.getService(AVTransport1);
 		if (localService == null) {
-			return -1;
+			return null;
 		}
 
 		final Action localAction = localService.getAction("GetMediaInfo");
 		if (localAction == null) {
-			return -1;
+			return null;
 		}
 
 		localAction.setArgumentValue("InstanceID", "0");
 		if (localAction.postControlAction()) {
-			return Integer.parseInt(localAction
-					.getArgumentValue("MediaDuration"));
+			return localAction.getArgumentValue("MediaDuration");
 		} else {
-			return -1;
+			return null;
 		}
 
 	}
