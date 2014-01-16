@@ -7,12 +7,14 @@ import org.cybergarage.upnp.Service;
 import android.text.TextUtils;
 
 import com.charon.dmc.inter.IController;
+import com.charon.dmc.util.LogUtil;
 
 public class MultiPointController implements IController {
 	private static final String AVTransport1 = "urn:schemas-upnp-org:service:AVTransport:1";
 	private static final String SetAVTransportURI = "SetAVTransportURI";
 	private static final String RenderingControl = "urn:schemas-upnp-org:service:RenderingControl:1";
 	private static final String Play = "Play";
+	private static final String TAG = "MultiPointController";
 
 	@Override
 	public boolean play(Device device, String path) {
@@ -24,8 +26,10 @@ public class MultiPointController implements IController {
 
 		final Action action = service.getAction(SetAVTransportURI);
 		if (action == null) {
-			return false;
+//			LogUtil.e(TAG, "SetAVTransportURI action is null in play method");
+//			return false;
 		}
+		
 		final Action playAction = service.getAction(Play);
 		if (playAction == null) {
 			return false;
@@ -119,12 +123,20 @@ public class MultiPointController implements IController {
 
 	@Override
 	public int getMinVolumeValue(Device device) {
-		return Integer.parseInt(getVolumeDbRange(device, "MinValue"));
+		String minValue = getVolumeDbRange(device, "MinValue");
+		if (TextUtils.isEmpty(minValue)) {
+			return 0;
+		}
+		return Integer.parseInt(minValue);
 	}
 
 	@Override
 	public int getMaxVolumeValue(Device device) {
-		return Integer.parseInt(getVolumeDbRange(device, "MaxValue"));
+		String maxValue = getVolumeDbRange(device, "MaxValue");
+		if (TextUtils.isEmpty(maxValue)) {
+			return 100;
+		}
+		return Integer.parseInt(maxValue);
 	}
 
 	@Override

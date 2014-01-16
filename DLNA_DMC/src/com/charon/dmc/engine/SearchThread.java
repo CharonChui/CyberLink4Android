@@ -109,7 +109,7 @@ public class SearchThread extends Thread {
 
 		@Override
 		public void deviceAdded(Device dev) {
-			LogUtil.d(TAG, "control point add a device...");
+			LogUtil.d(TAG, "control point add a device..." + dev.getDeviceType() + dev.getFriendlyName());
 			DLNAContainer.getInstance().addDevice(dev);
 		}
 	};

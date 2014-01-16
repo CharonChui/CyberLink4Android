@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cybergarage.upnp.Device;
+import org.cybergarage.upnp.DeviceList;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.charon.dmc.engine.DLNAContainer;
 import com.charon.dmc.engine.MultiPointController;
 import com.charon.dmc.inter.IController;
+import com.charon.dmc.util.DLNAUtil;
 import com.charon.dmc.util.LogUtil;
 
 public class ControlActivity extends BaseActivity implements OnClickListener {
@@ -50,7 +52,7 @@ public class ControlActivity extends BaseActivity implements OnClickListener {
 	private static final String MUTE = "1";
 	private static final String UNMUTE = "0";
 	private int mMediaDuration;
-	private static final int RETRY_TIME = 2000;
+	private static final int RETRY_TIME = 1000;
 	private static final String NOT_IMPLEMENTED = "NOT_IMPLEMENTED";
 	private boolean mPaused;
 	private boolean mPlaying;
@@ -136,12 +138,12 @@ public class ControlActivity extends BaseActivity implements OnClickListener {
 		}
 
 		// init the state
-		updateMaxVolumn();
+		getMaxVolumn();
 
 		sb_progress.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
-				stopAutoIncreasing();
+				startAutoIncreasing();
 				int progress = seekBar.getProgress();
 				seek(secToTime(progress));
 			}
@@ -157,7 +159,6 @@ public class ControlActivity extends BaseActivity implements OnClickListener {
 				tv_current.setText(secToTime(progress));
 				if (fromUser) {
 					stopAutoIncreasing();
-					seek(secToTime(progress));
 				}
 			}
 		});
@@ -176,6 +177,13 @@ public class ControlActivity extends BaseActivity implements OnClickListener {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
+				if (progress == 0) {
+					iv_mute.setVisibility(View.VISIBLE);
+					iv_volume.setVisibility(View.GONE);
+				} else {
+					iv_mute.setVisibility(View.GONE);
+					iv_volume.setVisibility(View.VISIBLE);
+				}
 			}
 		});
 
@@ -197,14 +205,15 @@ public class ControlActivity extends BaseActivity implements OnClickListener {
 	/**
 	 * Get the max volume value and set it the sb_voice.
 	 */
-	private synchronized void updateMaxVolumn() {
+	private synchronized void getMaxVolumn() {
 		new Thread() {
 			public void run() {
 				final int maxVolumnValue = mController
 						.getMaxVolumeValue(mDevice);
 
-				if (maxVolumnValue == -1) {
+				if (maxVolumnValue <= 0) {
 					LogUtil.d(TAG, "get max volumn value failed..");
+					sb_voice.setMax(100);
 				} else {
 					LogUtil.d(TAG,
 							"get max volumn value success, the value is "
@@ -283,13 +292,14 @@ public class ControlActivity extends BaseActivity implements OnClickListener {
 				final boolean isSuccess = mController.play(mDevice, path);
 				if (isSuccess) {
 					LogUtil.d(TAG, "play success");
-					startAutoIncreasing();
 				} else {
 					LogUtil.d(TAG, "play failed..");
 				}
 
 				runOnUiThread(new Runnable() {
 					public void run() {
+						LogUtil.d(TAG,
+								"play success and start to get media duration");
 						if (isSuccess) {
 							mPlaying = true;
 							startAutoIncreasing();
@@ -410,12 +420,13 @@ public class ControlActivity extends BaseActivity implements OnClickListener {
 			@Override
 			public void run() {
 				String position = mController.getPositionInfo(mDevice);
+				LogUtil.d(TAG, "Get position info and the value is " + position);
 				if (TextUtils.isEmpty(position)
 						|| NOT_IMPLEMENTED.equals(position)) {
 					return;
 				}
 				final int currentPosition = getIntLength(position);
-				if (currentPosition > mMediaDuration) {
+				if (currentPosition <= 0 || currentPosition > mMediaDuration) {
 					return;
 				}
 				sb_progress.setProgress(getIntLength(position));
@@ -446,14 +457,24 @@ public class ControlActivity extends BaseActivity implements OnClickListener {
 				final String mediaDuration = mController
 						.getMediaDuration(mDevice);
 				mMediaDuration = getIntLength(mediaDuration);
+
+				LogUtil.d(TAG, "Get media duration and the value is "
+						+ mMediaDuration);
 				runOnUiThread(new Runnable() {
 					public void run() {
 						if (TextUtils.isEmpty(mediaDuration)
-								|| NOT_IMPLEMENTED.equals(mediaDuration)) {
+								|| NOT_IMPLEMENTED.equals(mediaDuration)
+								|| mMediaDuration <= 0) {
 							mHandler.postDelayed(new Runnable() {
 
 								@Override
 								public void run() {
+									LogUtil.e(TAG,
+											"Get media duration failed, retry later."
+													+ "Duration:"
+													+ mediaDuration
+													+ "intLength:"
+													+ mMediaDuration);
 									getMediaDuration();
 								}
 							}, RETRY_TIME);
@@ -707,6 +728,9 @@ public class ControlActivity extends BaseActivity implements OnClickListener {
 	 * @return The length in seconds.
 	 */
 	private int getIntLength(String length) {
+		if (TextUtils.isEmpty(length)) {
+			return 0;
+		}
 		String[] split = length.split(":");
 		int count = 0;
 		try {

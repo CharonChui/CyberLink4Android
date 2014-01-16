@@ -3,17 +3,20 @@ package com.charon.dmc.util;
 import org.cybergarage.upnp.Device;
 
 public class DLNAUtil {
+	private static final String MEDIARENDER = "urn:schemas-upnp-org:device:MediaRenderer:1";
+
 	/**
-	 * DMR
+	 * Check if the device is a media render device
 	 * 
 	 * @param device
 	 * @return
 	 */
 	public static boolean isMediaRenderDevice(Device device) {
-		if ("urn:schemas-upnp-org:device:MediaRenderer:1"
-				.equalsIgnoreCase(device.getDeviceType())) {
+		if (device != null
+				&& MEDIARENDER.equalsIgnoreCase(device.getDeviceType())) {
 			return true;
 		}
+
 		return false;
 	}
 }

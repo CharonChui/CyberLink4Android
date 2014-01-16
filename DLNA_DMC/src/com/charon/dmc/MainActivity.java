@@ -43,6 +43,12 @@ public class MainActivity extends BaseActivity {
 		super.onResume();
 		refresh();
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		stopDLNAService();
+	}
 
 	private void findView() {
 		btn_main = (Button) findViewById(R.id.btn_main);
@@ -102,6 +108,11 @@ public class MainActivity extends BaseActivity {
 	private void startDLNAService() {
 		Intent intent = new Intent(getApplicationContext(), DLNAService.class);
 		startService(intent);
+	}
+	
+	private void stopDLNAService() {
+		Intent intent = new Intent(getApplicationContext(), DLNAService.class);
+		stopService(intent);
 	}
 
 	private void startControlActivity() {

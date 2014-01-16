@@ -33,12 +33,12 @@ public class DLNAContainer {
 				return;
 			}
 		}
-
+		
+		mDevices.add(d);
+		LogUtil.d(TAG, "Devices add a device" + d.getDeviceType());
 		if (mDeviceChangeListener != null) {
 			mDeviceChangeListener.onDeviceChange(d);
 		}
-		LogUtil.d(TAG, "Devices add a device");
-		mDevices.add(d);
 	}
 
 	public synchronized void removeDevice(Device d) {
