@@ -15,7 +15,8 @@
         android:background="@android:color/black"
         android:gravity="center"
         android:singleLine="true"
-        android:text="title" />
+        android:text="title"
+        android:textSize="30dip" />
 
     <RelativeLayout
         android:id="@+id/rl_boot"
@@ -41,7 +42,7 @@
             android:baselineAligned="false" >
 
             <LinearLayout
-                android:layout_width="120dp"
+                android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="10dp" >
@@ -51,6 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
+                    android:singleLine="true"
                     android:text="00:00:00" />
 
                 <TextView
@@ -63,6 +65,7 @@
                     android:id="@+id/tv_total"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:singleLine="true"
                     android:text="00:00:00" />
             </LinearLayout>
 

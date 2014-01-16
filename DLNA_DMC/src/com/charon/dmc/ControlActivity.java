@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cybergarage.upnp.Device;
-import org.cybergarage.upnp.DeviceList;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -23,7 +22,6 @@ import android.widget.Toast;
 import com.charon.dmc.engine.DLNAContainer;
 import com.charon.dmc.engine.MultiPointController;
 import com.charon.dmc.inter.IController;
-import com.charon.dmc.util.DLNAUtil;
 import com.charon.dmc.util.LogUtil;
 
 public class ControlActivity extends BaseActivity implements OnClickListener {

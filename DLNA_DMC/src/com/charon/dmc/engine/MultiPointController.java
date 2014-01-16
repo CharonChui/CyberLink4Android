@@ -7,14 +7,12 @@ import org.cybergarage.upnp.Service;
 import android.text.TextUtils;
 
 import com.charon.dmc.inter.IController;
-import com.charon.dmc.util.LogUtil;
 
 public class MultiPointController implements IController {
 	private static final String AVTransport1 = "urn:schemas-upnp-org:service:AVTransport:1";
 	private static final String SetAVTransportURI = "SetAVTransportURI";
 	private static final String RenderingControl = "urn:schemas-upnp-org:service:RenderingControl:1";
 	private static final String Play = "Play";
-	private static final String TAG = "MultiPointController";
 
 	@Override
 	public boolean play(Device device, String path) {
@@ -26,10 +24,9 @@ public class MultiPointController implements IController {
 
 		final Action action = service.getAction(SetAVTransportURI);
 		if (action == null) {
-//			LogUtil.e(TAG, "SetAVTransportURI action is null in play method");
-//			return false;
+			return false;
 		}
-		
+
 		final Action playAction = service.getAction(Play);
 		if (playAction == null) {
 			return false;
