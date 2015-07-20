@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/xuchuanren/development/bitbucket/CyberLink4Android/dmc_sample/build/intermediates/exploded-aar/CyberLink4Android/library/unspecified/jars/libs/clink210.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="f7ab8272b6817bbfb6f35113f0f51d616cccfd90">
+        <dex dex="/home/xuchuanren/development/bitbucket/CyberLink4Android/dmc_sample/build/intermediates/pre-dexed/debug/clink210-879ad8ccb7f73aacde921075f31377b12fc56761.jar" />
+    </item>
+    <item
+        jar="/home/xuchuanren/development/bitbucket/CyberLink4Android/dmc_sample/build/intermediates/exploded-aar/CyberLink4Android/library/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="c2a52b1a90a42a8b815d05ddb50e8993062f6144">
+        <dex dex="/home/xuchuanren/development/bitbucket/CyberLink4Android/dmc_sample/build/intermediates/pre-dexed/debug/classes-961a5e95e2b8d4f592513bccadfd8213c0a64e74.jar" />
+    </item>
+
+</items>
