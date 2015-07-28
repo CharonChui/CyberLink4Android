@@ -10,6 +10,12 @@ CyberLink for Android is a **DLNA** development package for UPnP™ developers o
 ![image](https://raw.githubusercontent.com/CharonChui/CyberLink4Android/master/Pic/dlna02.jpg)
 ![image](https://raw.githubusercontent.com/CharonChui/CyberLink4Android/master/Pic/dlna03.jpg)
 
+Usage
+===
+
+If you are building with Gradle, simply add the following line to the `dependencies` section of your `build.gradle` file :            
+`compile 'com.charon.cyberlink:library:1.0.0'`         
+
 Developed By
 ===
 
