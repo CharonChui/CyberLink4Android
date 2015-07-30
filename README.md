@@ -14,7 +14,7 @@ Usage
 ===
 
 If you are building with Gradle, simply add the following line to the `dependencies` section of your `build.gradle` file :            
-`compile 'com.charon.cyberlink:library:1.0.0'`         
+`compile 'com.charonchui.cyberlink:library:1.0.0'`         
 
 Developed By
 ===
